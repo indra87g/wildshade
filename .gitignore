@@ -1,0 +1,11 @@
+/venv
+/**/**/__pycache__
+/.pytest_cache
+/build
+/dist
+
+.env
+Pipfile.lock
+savegame.dat
+savegame.json
+wildshade.log

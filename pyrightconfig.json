@@ -1,0 +1,33 @@
+{
+    "include": [
+        "."
+    ],
+
+    "exclude": [
+        "**/node_modules",
+        "**/__pycache__",
+    ],
+
+    "defineConstant": {
+        "DEBUG": true
+    },
+
+    "reportUnusedCallResult": "none",
+    "reportMissingImports": "error",
+    "reportMissingTypeStubs": false,
+    "reportImplicitOverride": "none",
+    "reportUnannotatedClassAttribute": "none",
+    "reportMissingTypeArgument": "hint",
+    "reportMissingParameterType": "none",
+    "reportUninitializedInstanceVariable": "none",
+    "reportUnknownVariableType": "none",
+    "reportUnknownMemberType": "none",
+    "reportUnknownArgumentType": "hint",
+    "reportUnknownParameterType": "hint",
+    "reportOptionalMemberAccess": "information",
+    "reportReturnType": "none",
+    "reportPrivateImportUsage": "hint",
+
+    "pythonVersion": "3.7",
+    "pythonPlatform": "Windows",
+}
