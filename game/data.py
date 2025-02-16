@@ -18,6 +18,13 @@ items_for_sale = {
 
 items_durability = {"Stone Sword": 50, "Stone Axe": 50, "Stone Pickaxe": 50}
 
+stats = {
+    "enemy_defeated": 0,
+    "foods_eat": 0,
+    "stone_collected": 0,
+    "wood_collected": 0,
+}
+
 wolf: Enemy = Enemy("Wolf", 30, "A wild wolf is growling at you!", 10, 20, 15)
 gnoll: Enemy = Enemy(
     "Gnoll", 25, "A quick brown gnoll is angry to see you!", 15, 20, 10

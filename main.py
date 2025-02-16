@@ -27,20 +27,21 @@ def welcome() -> None:
     next_turn(player_class=False, check_status=False)
 
 
-def shop(player) -> None:
-    player.shop.show_shop()
+def explore(player) -> None:
+    clear()
     c.print("\n[bold blue]What would like to do?[/bold blue]")
-    shop_action = Prompt.ask("[bold yellow](B)uy / (S)ell[/bold yellow]").lower()
-    if shop_action == "b":
-        item = Prompt.ask("[bold blue]Enter item name to buy:[/bold blue]")
-        player.shop.buy(player, item)
-    elif shop_action == "s":
-        item = Prompt.ask("[bold blue]Enter item name to sell:[/bold blue]")
-        player.shop.sell(player, item)
-    next_turn(player, check_status=False)
+    explore_action = Prompt.ask(
+        "[bold yellow](E)xplore / (Q)uest[/bold yellow]"
+    ).lower()
+    if explore_action == "e":
+        player.explore()
+    elif explore_action == "q":
+        player.quest.show_quest()
+    next_turn(player)
 
 
 def consume(player) -> None:
+    clear()
     c.print("\n[bold blue]What would like to do?[/bold blue]")
     consume_action = Prompt.ask("[bold yellow](E)at / (D)rink[/bold yellow]").lower()
     if consume_action == "e":
@@ -52,6 +53,7 @@ def consume(player) -> None:
 
 
 def work(player) -> None:
+    clear()
     c.print("\n[bold blue]What would like to do?[/bold blue]")
     work_action = Prompt.ask(
         "[bold yellow](M)ining / (W)oodcutting[/bold yellow]"
@@ -66,17 +68,30 @@ def work(player) -> None:
     next_turn(player)
 
 
+def shop(player) -> None:
+    clear()
+    player.shop.show_shop()
+    c.print("\n[bold blue]What would like to do?[/bold blue]")
+    shop_action = Prompt.ask("[bold yellow](B)uy / (S)ell[/bold yellow]").lower()
+    if shop_action == "b":
+        item = Prompt.ask("[bold blue]Enter item name to buy:[/bold blue]")
+        player.shop.buy(player, item)
+    elif shop_action == "s":
+        item = Prompt.ask("[bold blue]Enter item name to sell:[/bold blue]")
+        player.shop.sell(player, item)
+    next_turn(player, check_status=False)
+
+
 def main(player) -> None:
     clear()
-    c.print("\n[bold blue]What would like to do?[/bold blue]")
     player.show_status()
+    c.print("\n[bold blue]What would like to do?[/bold blue]")
     action = Prompt.ask(
         "[bold yellow](E)xplore / (C)onsume / (W)ork / (R)est / (I)nventory / (Sh)op / (Q)uit[/bold yellow]"
     ).lower()
 
     if action == "e":
-        player.explore()
-        next_turn(player)
+        explore(player)
     elif action == "c":
         consume(player)
     elif action == "w":

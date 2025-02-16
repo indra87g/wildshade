@@ -6,6 +6,7 @@ from rich.panel import Panel
 from game.inventory import Inventory
 from game.shop import Shop
 from game.enemy import Enemy
+from game.quest import Quest
 from game.data import enemies, items_durability
 from game.utils.logger import log_info, log_warning
 
@@ -25,6 +26,7 @@ class Player:
         self.xp = 0
         self.inventory = Inventory()
         self.shop = Shop()
+        self.quest = Quest()
         log_info(f"Class 'Player' with 'self.name = {name}' loaded.")
 
     def show_status(self) -> None:
@@ -55,6 +57,10 @@ class Player:
             loot = random.choice(["Gold Ring", "Silver Gauntlet", "Old Map"])
             self.inventory.add_item(loot)
             c.print(f"[bold green]You found a {loot}![/bold green]")
+        elif self.quest.stats["enemy_defeated"] == 10:
+            c.print(
+                f"[bold magenta]You defeated 10 enemies! Claim gift in Quest[/bold magenta]"
+            )
         else:
             c.print("[bold cyan]You found nothing[/bold cyan]")
 
@@ -138,6 +144,7 @@ class Player:
             self.coins += enemy.coins
             self.hunger = min(self.hunger + random.randint(5, 10), 100)
             self.thirst = min(self.thirst + random.randint(5, 10), 100)
+            self.quest.stats["enemy_defeated"] += 1
 
     def mining(self, hours: int) -> None:
         if "Stone Pickaxe" in self.inventory.items:
@@ -152,7 +159,11 @@ class Player:
             [bold purple]XP Gained:[/bold purple] 10
             """
             self.item_durability(10, "Stone Pickaxe")
-            c.print(Panel(result, title="[bold green]Mining Result[/bold green]"))
+            c.print(
+                Panel(
+                    result, title="[bold green]Mining Result[/bold green]", expand=False
+                )
+            )
             self.coins += stone / 2
             self.gain_xp(10)
         else:
@@ -215,6 +226,7 @@ class Player:
             "level": self.level,
             "xp": self.xp,
             "inventory": self.inventory.to_dict(),
+            "quest_stats": self.quest.to_dict(),
         }
         with open(filename, "w") as f:
             json.dump(data, f)
@@ -234,5 +246,6 @@ class Player:
         self.level = data["level"]
         self.xp = data["xp"]
         self.inventory.from_dict(data["inventory"])
+        self.quest.from_dict(data["quest_stats"])
         c.print(f"[bold green]Game loaded from {filename}[/bold green]")
         log_info(f"Game loaded from {filename}")

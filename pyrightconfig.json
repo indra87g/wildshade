@@ -1,12 +1,7 @@
 {
-    "include": [
-        "."
-    ],
+    "include": ["."],
 
-    "exclude": [
-        "**/node_modules",
-        "**/__pycache__",
-    ],
+    "exclude": ["**/node_modules", "**/__pycache__"],
 
     "defineConstant": {
         "DEBUG": true
@@ -29,5 +24,5 @@
     "reportPrivateImportUsage": "hint",
 
     "pythonVersion": "3.7",
-    "pythonPlatform": "Windows",
+    "pythonPlatform": "Windows"
 }
