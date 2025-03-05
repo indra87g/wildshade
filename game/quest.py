@@ -12,14 +12,16 @@ class Quest:
     def show_quest(self) -> None:
         quest = f"""
         I. Combat
-        {self.quest_progress('enemy_defeated', 'Defeat', self.quests['combat'], 'Enemy', 'green')}
+        {self.quest_progress("enemy_defeated", "Defeat", self.quests["combat"], "Enemy", "green")}
 
         II. Mining
-        {self.quest_progress('stone_collected', 'Mine', self.quests['mining'], 'Stone', 'blue')}
+        {self.quest_progress("stone_collected", "Mine", self.quests["mining"], "Stone", "blue")}
         """
         c.print(Panel(quest, title="Active Quest", expand=False))
 
-    def quest_progress(self, key: str, action: str, milestones: list, item: str, color: str)-> str:
+    def quest_progress(
+        self, key: str, action: str, milestones: list, item: str, color: str
+    ) -> str:
         value = self.stats.get(key, 0)
 
         for milestone in milestones:

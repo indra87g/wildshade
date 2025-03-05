@@ -2,7 +2,16 @@ import random
 
 
 class Enemy:
-    def __init__(self, name: str, health: int, description: str, damage: int, xp: int, coins: int, level=1) -> None:
+    def __init__(
+        self,
+        name: str,
+        health: int,
+        description: str,
+        damage: int,
+        xp: int,
+        coins: int,
+        level=1,
+    ) -> None:
         self.name = name
         self.level = level
         self.health = health + level * 5

@@ -18,10 +18,7 @@ items_for_sale = {
 
 items_durability = {"Stone Sword": 50, "Stone Axe": 50, "Stone Pickaxe": 50}
 
-quests = {
-    "combat": [10, 20, 50, 100],
-    "mining": [10, 20, 50, 100]
-}
+quests = {"combat": [10, 20, 50, 100], "mining": [10, 20, 50, 100]}
 
 stats = {
     "enemy_defeated": 0,
