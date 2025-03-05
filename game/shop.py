@@ -1,7 +1,7 @@
 from rich.table import Table
 
 from game.utils.ui import c
-from game.utils.logger import log_info, log_warning
+from game.utils.logger import log_warning
 from game.data import items_for_sale
 
 
@@ -12,7 +12,6 @@ class Shop:
         self.sell_prices = {
             item: price // 2 for item, price in self.items_for_sale.items()
         }
-        log_info("Class 'Shop' loaded.")
 
     def show_shop(self) -> None:
         """Show item list for shop in table."""

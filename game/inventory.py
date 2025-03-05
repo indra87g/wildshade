@@ -1,13 +1,11 @@
 from rich.table import Table
 
 from game.utils.ui import c
-from game.utils.logger import log_info
 
 
 class Inventory:
     def __init__(self) -> None:
         self.items = {}
-        log_info("Class 'Inventory' loaded.")
 
     def add_item(self, item: str, quantity=1) -> None:
         """Add item to inventory."""

@@ -4,7 +4,7 @@ from platform import python_version
 
 from game.player import Player
 from game.utils.ui import c
-from game.utils.logger import log_info, log_warning, truncate_log
+from game.utils.logger import log_info, log_warning
 from game.data import fake_name
 
 
@@ -22,9 +22,21 @@ def next_turn(player=None, check_status=True, player_class=True) -> None:
         clear()
 
 
-def welcome() -> None:
+def welcome(player) -> None:
     c.print("[bold cyan]Welcome to Wildshade![/bold cyan]\n")
     next_turn(player_class=False, check_status=False)
+    try:
+        name: str = Prompt.ask("\n[bold yellow]Enter your name[/bold yellow]")
+
+        if not name:
+            log_warning("'name' is not provided, using fake name instead.")
+            player = Player(fake_name)
+        else:
+            player = Player(name)
+        main(player)
+    except KeyboardInterrupt:
+        c.print("[bold red]Program closed.[/bold red]")
+        log_warning("Program closed on `KeyboardInterrupt`.")
 
 
 def explore(player) -> None:
@@ -83,59 +95,56 @@ def shop(player) -> None:
 
 
 def main(player) -> None:
-    clear()
-    player.show_status()
-    c.print("\n[bold blue]What would like to do?[/bold blue]")
-    action = Prompt.ask(
-        "[bold yellow](E)xplore / (C)onsume / (W)ork / (R)est / (I)nventory / (Sh)op / (Q)uit[/bold yellow]"
-    ).lower()
+    try:
+        clear()
+        player.show_status()
+        c.print("\n[bold blue]What would like to do?[/bold blue]")
+        action = Prompt.ask(
+            "[bold yellow](E)xplore / (C)onsume / (W)ork / (R)est / (I)nventory / (Sh)op / (Q)uit[/bold yellow]"
+        ).lower()
 
-    if action == "e":
-        explore(player)
-    elif action == "c":
-        consume(player)
-    elif action == "w":
-        work(player)
-    elif action == "r":
-        hours = int(
-            Prompt.ask("[bold blue]How many hours do you want to sleep?[/bold blue]")
-        )
-        player.rest(hours)
-        next_turn(player)
-    elif action == "i":
-        player.inventory.show_inventory()
-        next_turn(player, check_status=False)
-    elif action == "sh":
-        shop(player)
-    elif action == "q":
-        player.save_game()
-        c.print("[bold red]Thanks for playing! Come back soon![/bold red]")
-        log_info("Program closed with (Q)uit.")
-        exit()
-    elif action == "save":
-        player.save_game()
-        next_turn(player, check_status=False)
-    elif action == "load":
-        player.load_game()
-        next_turn(player, check_status=False)
-    else:
-        c.print("[bold red]Invalid action! Try again.[/bold red]")
-        next_turn(player, check_status=False)
+        if action == "e":
+            explore(player)
+        elif action == "c":
+            consume(player)
+        elif action == "w":
+            work(player)
+        elif action == "r":
+            hours = int(
+                Prompt.ask(
+                    "[bold blue]How many hours do you want to sleep?[/bold blue]"
+                )
+            )
+            player.rest(hours)
+            next_turn(player)
+        elif action == "i":
+            player.inventory.show_inventory()
+            next_turn(player, check_status=False)
+        elif action == "sh":
+            shop(player)
+        elif action == "q":
+            player.save_game()
+            c.print("[bold red]Thanks for playing! Come back soon![/bold red]")
+            log_info("Program closed securely.")
+            exit()
+        elif action == "save":
+            player.save_game()
+            next_turn(player, check_status=False)
+        elif action == "load":
+            player.load_game()
+            next_turn(player, check_status=False)
+        else:
+            c.print("[bold red]Invalid action! Try again.[/bold red]")
+            next_turn(player, check_status=False)
+    except KeyboardInterrupt:
+        log_warning("Program closed on `KeyboardInterrupt`.")
 
 
 if __name__ == "__main__":
-    truncate_log()
     log_info(f"Program started on Python {python_version()}")
-    welcome()
-    try:
-        name: str = Prompt.ask("\n[bold yellow]Enter your name[/bold yellow]")
-
-        if not name:
-            log_warning("'name' is not provided, using fake name instead.")
-            player = Player(fake_name)
-        else:
-            player = Player(name)
-        main(player)
-    except KeyboardInterrupt:
-        c.print("[bold red]Program closed.[/bold red]")
-        log_info("Program closed with CTRL+C.")
+    player = Player(fake_name)
+    player.load_game()
+    if not player.savegame_notfound:
+        next_turn(player, player_class=True, check_status=False)
+    elif player.savegame_notfound:
+        welcome(player)

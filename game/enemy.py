@@ -1,7 +1,5 @@
 import random
 
-from game.utils.logger import log_info
-
 
 class Enemy:
     def __init__(
@@ -13,7 +11,6 @@ class Enemy:
         self.damage = damage
         self.xp = xp
         self.coins = coins
-        log_info("Class 'Enemy' loaded.")
 
     def attack(self) -> int:
         return random.randint(self.damage - 5, self.damage + 5)

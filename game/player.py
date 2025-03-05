@@ -10,7 +10,6 @@ from game.quest import Quest
 from game.data import enemies, items_durability
 from game.utils.logger import log_info, log_warning
 
-# from game.utils.security import encrypt_data, decrypt_data
 from game.utils.ui import c
 
 
@@ -27,7 +26,7 @@ class Player:
         self.inventory = Inventory()
         self.shop = Shop()
         self.quest = Quest()
-        log_info(f"Class 'Player' with 'self.name = {name}' loaded.")
+        self.savegame_notfound = None
 
     def show_status(self) -> None:
         """Show player status using Rich Panel."""
@@ -59,7 +58,7 @@ class Player:
             c.print(f"[bold green]You found a {loot}![/bold green]")
         elif self.quest.stats["enemy_defeated"] == 10:
             c.print(
-                f"[bold magenta]You defeated 10 enemies! Claim gift in Quest[/bold magenta]"
+                "[bold magenta]You defeated 10 enemies! Claim gift in Quest[/bold magenta]"
             )
         else:
             c.print("[bold cyan]You found nothing[/bold cyan]")
@@ -166,6 +165,7 @@ class Player:
             )
             self.coins += stone / 2
             self.gain_xp(10)
+            self.quest.stats["stone_collected"] += stone
         else:
             c.print("[bold red]You don't have a Pickaxe![/bold red]")
 
@@ -186,7 +186,6 @@ class Player:
             or self.thirst >= 100
         ):
             c.print("[bold red]GAME OVER![/bold red]")
-            log_warning(f"Player {self.name} is Game Over.")
             exit()
         else:
             c.print("[bold green]You are still surviving![/bold green]")
@@ -204,7 +203,7 @@ class Player:
             self.xp -= self.level * 100
             self.level += 1
             self.health = 100
-            c.print("[bold blue]You leveled up to level {self.level}!")
+            c.print(f"[bold blue]You leveled up to level {self.level}!")
 
     def show_health_bar(self, name: str, current_hp: int, max_hp=100) -> None:
         if current_hp > 0:
@@ -215,7 +214,7 @@ class Player:
             pass
 
     def save_game(self, filename="savegame.json") -> None:
-        """Save and encrypt game."""
+        """Save game."""
         data = {
             "name": self.name,
             "coins": self.coins,
@@ -234,18 +233,25 @@ class Player:
         log_info(f"Game saved to {filename}")
 
     def load_game(self, filename="savegame.json") -> None:
-        with open(filename, "r") as f:
-            data: dict = json.load(f)
+        """Save game"""
+        try:
+            with open(filename, "r") as f:
+                data: dict = json.load(f)
 
-        self.name = data["name"]
-        self.coins = data["coins"]
-        self.health = data["health"]
-        self.hunger = data["hunger"]
-        self.thirst = data["thirst"]
-        self.energy = data["energy"]
-        self.level = data["level"]
-        self.xp = data["xp"]
-        self.inventory.from_dict(data["inventory"])
-        self.quest.from_dict(data["quest_stats"])
-        c.print(f"[bold green]Game loaded from {filename}[/bold green]")
-        log_info(f"Game loaded from {filename}")
+            self.name = data["name"]
+            self.coins = data["coins"]
+            self.health = data["health"]
+            self.hunger = data["hunger"]
+            self.thirst = data["thirst"]
+            self.energy = data["energy"]
+            self.level = data["level"]
+            self.xp = data["xp"]
+            self.inventory.from_dict(data["inventory"])
+            self.quest.from_dict(data["quest_stats"])
+            self.savegame_notfound = False
+            c.print(f"[bold green]Game loaded from {filename}[/bold green]")
+            log_info(f"Game loaded from {filename}")
+        except FileNotFoundError:
+            self.savegame_notfound = True
+            c.print("[bold red]Savegame not found! Starting new game.[/bold red]")
+            log_warning("No savegame found. Starting new game.")

@@ -14,7 +14,10 @@ class Quest:
         {self.defeat_enemy()}
 
         II. Mining
-        Mine 20 Stone
+        {self.mine_stone()}
+
+        III. Gourmet
+        Eat 10 Foods
         """
         c.print(Panel(quest, title="Active Quest", expand=False))
 
@@ -30,7 +33,24 @@ class Quest:
         elif self.stats["enemy_defeated"] in range(100, 999999999):
             return f"""
         [bold magenta]Quest Combat Complete![/bold magenta]
-        [italic yellow]Enemy Defeated: {self.stats['enemy_defeated']}[/italic yellow]
+        [italic yellow]Enemy Defeated: {self.stats["enemy_defeated"]}[/italic yellow]
+        """
+
+    def mine_stone(self) -> str:
+        if self.stats["stone_collected"] in range(0, 19):
+            return "[italic blue]Mine 20 Stone[/italic blue]"
+        elif self.stats["stone_collected"] in range(20, 39):
+            return "[italic blue]Mine 40 Stone[/italic blue]"
+        elif self.stats["stone_collected"] in range(40, 59):
+            return "[italic blue]Mine 60 Stone[/italic blue]"
+        elif self.stats["stone_collected"] in range(60, 79):
+            return "[italic blue]Mine 80 Stone[/italic blue]"
+        elif self.stats["stone_collected"] in range(80, 99):
+            return "[italic blue]Mine 100 Stone[/italic blue]"
+        elif self.stats["stone_collected"] in range(100, 999999999):
+            return f"""
+        [bold magenta]Quest Mining Complete![/bold magenta]
+        [italic yellow]Stone Collected: {self.stats["stone_collected"]}[/italic yellow]
         """
 
     def to_dict(self) -> None:
