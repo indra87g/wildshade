@@ -105,7 +105,7 @@ class Player:
 
             if action == "a":
                 damage = random.randint(10, 20)
-                enemy.health -= damage
+                enemy.take_damage(damage)
                 c.print(
                     f"[bold green]You hit {enemy.name} for {damage} damage![/bold green]"
                 )

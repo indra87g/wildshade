@@ -31,6 +31,7 @@ class Shop:
             if player.coins >= price:
                 c.print(f"[bold green]You bought {item} for {price}")
                 player.inventory.add_item(item)
+                player.coins -= price
             else:
                 c.print(f"[bold red]Not enough coins to buy {item}")
         else:
@@ -44,5 +45,6 @@ class Shop:
             player.inventory.remove_item(item)
             player.coins += price
             c.print(f"[bold green]You sold {item} for {price}c")
+            c.print(f"[bold blue]Your current coins: {player.coins}c[/bold blue]")
         else:
             c.print(f"[bold red]You don't have {item} to sell")

@@ -110,13 +110,18 @@ def main(player) -> None:
         elif action == "w":
             work(player)
         elif action == "r":
-            hours = int(
-                Prompt.ask(
-                    "[bold blue]How many hours do you want to sleep?[/bold blue]"
+            try:
+                hours = int(
+                    Prompt.ask(
+                        "[bold blue]How many hours do you want to sleep?[/bold blue]"
+                    )
                 )
-            )
-            player.rest(hours)
-            next_turn(player)
+                player.rest(hours)
+                next_turn(player)
+            except ValueError:
+                c.print("[bold red]Invalid Input! Please enter a number.[/bold red]")
+                return work(player)
+
         elif action == "i":
             player.inventory.show_inventory()
             next_turn(player, check_status=False)
@@ -124,6 +129,7 @@ def main(player) -> None:
             shop(player)
         elif action == "q":
             player.save_game()
+            clear()
             c.print("[bold red]Thanks for playing! Come back soon![/bold red]")
             log_info("Program closed securely.")
             exit()
