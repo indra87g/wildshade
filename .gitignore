@@ -11,3 +11,8 @@ uv.lock
 savegame.dat
 savegame.json
 wildshade.log
+
+
+# Added by cargo
+
+/target

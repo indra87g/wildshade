@@ -1,0 +1,15 @@
+[package]
+name = "wildshade"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+chrono = "0.4.45"
+console = "0.16.3"
+fake = "5.1.0"
+inquire = "0.9.4"
+rand = "0.10.1"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.150"
+tracing = "0.1.44"
+tracing-subscriber = "0.3.23"
