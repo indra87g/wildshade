@@ -8,32 +8,18 @@ from game.utils.logger import log_info, log_warning
 from game.data import fake_name
 
 
-def next_turn(player=None, check_status=True, player_class=True) -> None:
-    if player_class:
-        if check_status:
-            player.check_status()
-            pause()
-            main(player)
-        else:
-            pause()
-            main(player)
-    else:
-        pause()
-        clear()
-
-
-def welcome(player) -> None:
+def welcome() -> None:
     c.print("[bold cyan]Welcome to Wildshade![/bold cyan]\n")
-    next_turn(player_class=False, check_status=False)
+    pause()
+    clear()
     try:
         name: str = Prompt.ask("\n[bold yellow]Enter your name[/bold yellow]")
-
         if not name:
             log_warning("'name' is not provided, using fake name instead.")
             player = Player(fake_name)
         else:
             player = Player(name)
-        main(player)
+        game_loop(player)
     except KeyboardInterrupt:
         c.print("[bold red]Program closed.[/bold red]")
         log_warning("Program closed on `KeyboardInterrupt`.")
@@ -49,7 +35,7 @@ def explore(player) -> None:
         player.explore()
     elif explore_action == "q":
         player.quest.show_quest()
-    next_turn(player)
+    pause()
 
 
 def consume(player) -> None:
@@ -61,7 +47,7 @@ def consume(player) -> None:
         player.eat(food)
     elif consume_action == "d":
         player.drink()
-    next_turn(player)
+    pause()
 
 
 def work(player) -> None:
@@ -77,7 +63,7 @@ def work(player) -> None:
         player.mining(hours)
     elif work_action == "w":
         player.woodcutting()
-    next_turn(player)
+    pause()
 
 
 def shop(player) -> None:
@@ -91,58 +77,64 @@ def shop(player) -> None:
     elif shop_action == "s":
         item = Prompt.ask("[bold blue]Enter item name to sell:[/bold blue]")
         player.shop.sell(player, item)
-    next_turn(player, check_status=False)
+    pause()
 
 
-def main(player) -> None:
+def game_loop(player) -> None:
     try:
-        clear()
-        player.show_status()
-        c.print("\n[bold blue]What would like to do?[/bold blue]")
-        action = Prompt.ask(
-            "[bold yellow](E)xplore / (C)onsume / (W)ork / (R)est / (I)nventory / (Sh)op / (Q)uit[/bold yellow]"
-        ).lower()
-
-        if action == "e":
-            explore(player)
-        elif action == "c":
-            consume(player)
-        elif action == "w":
-            work(player)
-        elif action == "r":
-            try:
-                hours = int(
-                    Prompt.ask(
-                        "[bold blue]How many hours do you want to sleep?[/bold blue]"
-                    )
-                )
-                player.rest(hours)
-                next_turn(player)
-            except ValueError:
-                c.print("[bold red]Invalid Input! Please enter a number.[/bold red]")
-                return work(player)
-
-        elif action == "i":
-            player.inventory.show_inventory()
-            next_turn(player, check_status=False)
-        elif action == "sh":
-            shop(player)
-        elif action == "q":
-            player.save_game()
+        while True:
             clear()
-            c.print("[bold red]Thanks for playing! Come back soon![/bold red]")
-            log_info("Program closed securely.")
-            exit()
-        elif action == "save":
-            player.save_game()
-            next_turn(player, check_status=False)
-        elif action == "load":
-            player.load_game()
-            next_turn(player, check_status=False)
-        else:
-            c.print("[bold red]Invalid action! Try again.[/bold red]")
-            next_turn(player, check_status=False)
+            player.show_status()
+            c.print("\n[bold blue]What would like to do?[/bold blue]")
+            action = Prompt.ask(
+                "[bold yellow](E)xplore / (C)onsume / (W)ork / (R)est / (I)nventory / (Sh)op / (Q)uit[/bold yellow]"
+            ).lower()
+
+            if action == "e":
+                explore(player)
+            elif action == "c":
+                consume(player)
+            elif action == "w":
+                work(player)
+            elif action == "r":
+                try:
+                    hours = int(
+                        Prompt.ask(
+                            "[bold blue]How many hours do you want to sleep?[/bold blue]"
+                        )
+                    )
+                    player.rest(hours)
+                    pause()
+                except ValueError:
+                    c.print("[bold red]Invalid Input! Please enter a number.[/bold red]")
+                    pause()
+            elif action == "i":
+                player.inventory.show_inventory()
+                pause()
+            elif action == "sh":
+                shop(player)
+            elif action == "q":
+                player.save_game()
+                clear()
+                c.print("[bold red]Thanks for playing! Come back soon![/bold red]")
+                log_info("Program closed securely.")
+                return
+            elif action == "save":
+                player.save_game()
+                pause()
+            elif action == "load":
+                player.load_game()
+                pause()
+            else:
+                c.print("[bold red]Invalid action! Try again.[/bold red]")
+                pause()
+
+            if not player.is_alive():
+                c.print("[bold red]GAME OVER![/bold red]")
+                pause()
+                return
     except KeyboardInterrupt:
+        player.save_game()
         log_warning("Program closed on `KeyboardInterrupt`.")
 
 
@@ -151,6 +143,6 @@ if __name__ == "__main__":
     player = Player(fake_name)
     player.load_game()
     if not player.savegame_notfound:
-        next_turn(player, player_class=True, check_status=False)
+        game_loop(player)
     elif player.savegame_notfound:
-        welcome(player)
+        welcome()

@@ -20,7 +20,7 @@ class Inventory:
         if item in self.items:
             if self.items[item] > quantity:
                 self.items[item] -= quantity
-                c.print(f"[bold yellow]Removed {quantity}x {item} from invrntory.")
+                c.print(f"[bold yellow]Removed {quantity}x {item} from inventory.")
             else:
                 del self.items[item]
                 c.print(f"[bold red]{item} removed from inventory.")

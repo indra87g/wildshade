@@ -1,5 +1,6 @@
 import random
 import json
+import copy
 from rich.prompt import Prompt
 from rich.panel import Panel
 
@@ -87,15 +88,8 @@ class Player:
             c.print("[bold red]You don't have any water![/bold red]")
 
     def fight(self) -> None:
-        enemy = random.choice(enemies)
-        enemy = Enemy(
-            enemy.name,
-            enemy.health,
-            enemy.description,
-            enemy.damage,
-            enemy.xp,
-            enemy.coins,
-        )
+        template = random.choice(enemies)
+        enemy = copy.deepcopy(template)
 
         c.print(f"\n[bold red]A {enemy.name} appears![/bold red] {enemy.description}")
 
@@ -136,7 +130,8 @@ class Player:
                 self.show_health_bar(self.name, self.health)
 
         if self.health <= 0:
-            c.print("[bold red]You has been defeated![/bold red]")
+            c.print("[bold red]You have been defeated![/bold red]")
+            return
         else:
             c.print(f"[bold green]You defeated {enemy.name}![/bold green]")
             self.gain_xp(enemy.xp)
@@ -175,7 +170,7 @@ class Player:
         self.energy = min(self.energy + (hours * 10), 100)
         self.health = min(self.health + (hours * 10), 100)
         self.hunger = min(self.hunger + hours, 100)
-        self.thirst = min(self.hunger + (hours + 10), 100)
+        self.thirst = min(self.thirst + (hours + 10), 100)
 
     def check_status(self) -> None:
         """Check if player is alive or not."""
@@ -189,6 +184,15 @@ class Player:
             exit()
         else:
             c.print("[bold green]You are still surviving![/bold green]")
+
+    def is_alive(self) -> bool:
+        """Check if player is still alive."""
+        return (
+            self.health > 0
+            and self.energy > 0
+            and self.hunger < 100
+            and self.thirst < 100
+        )
 
     def item_durability(self, amount: int, item: str) -> None:
         items_durability[item] -= amount

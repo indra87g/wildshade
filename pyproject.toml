@@ -15,4 +15,3 @@ dependencies = [
 run = "uv run main.py"
 lint = "ruff check ."
 format = "ruff format ."
-changelog = "git-cliff"
